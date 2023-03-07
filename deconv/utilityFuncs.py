@@ -11,13 +11,14 @@ from scipy.optimize import curve_fit
 from scipy.ndimage import gaussian_filter1d
 from scipy.signal import savgol_filter
 import numpy as np
+import os
 
 @dataclass
 class Gaussian():
     center: float
     width: float
     amplitude: float
-    
+
 def sortPeaks(peaks: list[Gaussian]) -> list[Gaussian]:
     centerList = [gauss.center for gauss in peaks]
     sortList = sorted(centerList)
@@ -89,7 +90,7 @@ def clipFunc(x: list[float], y: list[float], units: str = 'eV') -> tuple[list[fl
     return x, y
 
 def process(x: list[float], y: list[float], ngauss: int, amp: list[float, float],
-            sigma: list[int, int], maxIter: int, derivLevel:int) -> tuple[list[float], float, list[float], list[float], bool]:
+            sigma: list[int, int], maxIter: int, derivLevel: int) -> tuple[list[float], float, list[float], list[float], bool]:
     if derivLevel == 0:
         derivFuncList = funcList
         gaussian_func = gaussian_func0
@@ -157,3 +158,75 @@ def smoothing(algorithm: str, y: list[float], level: int, savgolPoly: int, savgo
     elif algorithm == 'Savitzky–Golay':
         y = savgol_filter(y, level, savgolPoly, deriv=savgolDeriv)
     return y
+
+def saveSpectrum(filename: str, filepath: str, baseLine: str, clip: tuple[float, float],
+                 autoClip: bool, derivLevel: int, amp: tuple[float, float], width: tuple[float, float],
+                 convergence: float, gaussRange: tuple[int, int], maxIter: int, ampCutoff: float,
+                 smoothingRaw: int, preSmoothingSigma: int, smoothingSigma: int, smoothingType: str,
+                 savgolPoly: int, savgolDeriv: int,
+                 derivPeaks: list[Gaussian], nonDerivPeaks: list[Gaussian],
+                 x: list[float], yRaw: list[float], yDeriv: list[float]) -> None:
+    name = filename.split(".")[0]
+    path = f'{filepath}/{name}'
+    settingsFile = f'{path}/settings.toml'
+    derivGaussFile = f'{path}/derivGaussians.csv'
+    nonDerivGaussFile = f'{path}/nonDerivGaussians.csv'
+    rawSpectrumFile = f'{path}/rawSpectrum.csv'
+    derivSpectrumFile = f'{path}/derivSpectrum.csv'
+    fileList = [settingsFile, derivGaussFile, nonDerivGaussFile, rawSpectrumFile, derivSpectrumFile]
+
+    try:
+        os.mkdir(path)
+    except FileExistsError:
+        for file in fileList:
+            try:
+                os.remove(file)
+                print(f'Deleted old {file}')
+            except FileNotFoundError:
+                pass
+
+    tomlString = f'#### Input Parameters for {name} ####\n'
+    tomlString += '[input]\n'
+    tomlString += f'baseline = "{baseLine}"\n'
+    tomlString += f'spectraRangeLow = [{clip[0]:.2f}, {clip[1]:.2f}]\n'
+    tomlString += f'autoClip = {autoClip}\n\n'
+    tomlString += '[fitting]\n'
+    tomlString += f'derivLevel = {derivLevel}\n'
+    tomlString += f'ampRange = [{amp[0]:.2f}, {amp[1]:.2f}]\n'
+    tomlString += f'widthRange = [{width[0]:.2f}, {width[1]:.2f}]\n'
+    tomlString += f'convergence = {convergence:.2f}\n'
+    tomlString += f'gaussRange = [{gaussRange[0]}, {gaussRange[1]}]\n'
+    tomlString += f'maxFittingIter = {maxIter}\n\n'
+    tomlString += '[refitting]\n'
+    tomlString += f'refitAmpCutoff = [{ampCutoff[0]:.2f}, {ampCutoff[1]:.2f}]\n\n'
+    tomlString += '[smoothing]\n'
+    tomlString += f'rawSmoothingLevel = {smoothingRaw}\n'
+    tomlString += f'nonDerivSmoothingLevel = {preSmoothingSigma}\n'
+    tomlString += f'derivSmoothingLevel = {smoothingSigma}\n'
+    tomlString += f'smoothingAlgorithm = "{smoothingType}"\n'
+    tomlString += f'SavGolPolyOrder = {savgolPoly}\n'
+    tomlString += f'SavGolDerivLevel = {savgolDeriv}\n\n'
+
+    with open(settingsFile, 'a+') as f:
+        f.write(tomlString)
+
+    with open(derivGaussFile, 'a+') as f:
+        f.write('location,width,amplitude\n')
+        for gauss in derivPeaks:
+            f.write(f'{gauss.center:.3f},{gauss.width:.4f},{gauss.amplitude:.4f}\n')
+
+    with open(nonDerivGaussFile, 'a+') as f:
+        f.write('location,width,amplitude\n')
+        for gauss in nonDerivPeaks:
+            f.write(f'{gauss.center:.3f},{gauss.width:.4f},{gauss.amplitude:.4f}\n')
+
+    with open(rawSpectrumFile, 'a+') as f:
+        f.write('X (eV),Y (AU)\n')
+        for (xpoint, ypoint) in zip(x, yRaw):
+            f.write(f'{xpoint:.3f},{ypoint:.4f}\n')
+
+    with open(derivSpectrumFile, 'a+') as f:
+        f.write('X (eV),Y (AU)\n')
+        for (xpoint, ypoint) in zip(x, yDeriv):
+            f.write(f'{xpoint:.3f},{ypoint:.4f}\n')
+    return
