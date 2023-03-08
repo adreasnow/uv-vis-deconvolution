@@ -37,4 +37,6 @@ git clone https://github.com/adreasnow/uv-vis-deconvolution.git Downloads/deconv
 jupyter lab --notebook-dir=Downloads/deconvolution
 ```
 
+## Example of the interface
+(Don't worry, the process for how it works and what each slider does is in the notebook itself)
 ![](https://raw.githubusercontent.com/adreasnow/uv-vis-deconvolution/main/example.png)
