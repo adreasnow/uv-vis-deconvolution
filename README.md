@@ -28,4 +28,13 @@ or
 pip install python numpy scipy matplotlib ipywidgets ipyfilechooser tqdm jupyterlab ipympl
 ```
 
+## Running
+
+Once you have the depemndencies, you should be able to clone it down and run it as you would any jupyter notebook.
+
+```bash
+git clone https://github.com/adreasnow/uv-vis-deconvolution.git Downloads/deconvolution
+jupyter lab --notebook-dir=Downloads/deconvolution
+```
+
 ![](https://raw.githubusercontent.com/adreasnow/uv-vis-deconvolution/main/example.png)
