@@ -28,3 +28,4 @@ or
 pip install python numpy scipy matplotlib ipywidgets ipyfilechooser tqdm jupyterlab ipympl
 ```
 
+![](https://raw.githubusercontent.com/adreasnow/uv-vis-deconvolution/main/example.png)
