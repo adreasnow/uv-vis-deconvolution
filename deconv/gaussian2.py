@@ -497,7 +497,7 @@ def gaussian2_20(x, amp1, cen1, sigma1,
     gList = np.add(gList, gaussian2_func(x, amp20, cen20, sigma20))
 
 
-gaussian2FuncList2 = [gaussian2_func, gaussian2_func, gaussian2_2,  gaussian2_3,  gaussian2_4,  gaussian2_5,  gaussian2_6,  gaussian2_7,
+gaussian2FuncList = [gaussian2_func, gaussian2_func, gaussian2_2,  gaussian2_3,  gaussian2_4,  gaussian2_5,  gaussian2_6,  gaussian2_7,
                       gaussian2_8,    gaussian2_9,    gaussian2_10, gaussian2_11, gaussian2_12, gaussian2_13, gaussian2_14, gaussian2_15,
                       gaussian2_16,   gaussian2_17,   gaussian2_18, gaussian2_19, gaussian2_20]
 

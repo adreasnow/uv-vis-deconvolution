@@ -497,7 +497,7 @@ def gaussian3_20(x, amp1, cen1, sigma1,
     gList = np.add(gList, gaussian3_func(x, amp20, cen20, sigma20))
 
 
-gaussian3FuncList3 = [gaussian3_func, gaussian3_func, gaussian3_2,  gaussian3_3,  gaussian3_4,  gaussian3_5,  gaussian3_6,  gaussian3_7,
+gaussian3FuncList = [gaussian3_func, gaussian3_func, gaussian3_2,  gaussian3_3,  gaussian3_4,  gaussian3_5,  gaussian3_6,  gaussian3_7,
                       gaussian3_8,    gaussian3_9,    gaussian3_10, gaussian3_11, gaussian3_12, gaussian3_13, gaussian3_14, gaussian3_15,
                       gaussian3_16,   gaussian3_17,   gaussian3_18, gaussian3_19, gaussian3_20]
 
