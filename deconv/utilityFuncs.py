@@ -1,11 +1,8 @@
-from .gaussian0 import gaussian0FuncList
-from .gaussian0 import gaussian0_func
-from .gaussian1 import gaussian1FuncList
-from .gaussian1 import gaussian1_func
-from .gaussian2 import gaussian2FuncList
-from .gaussian2 import gaussian2_func
-from .gaussian3 import gaussian3FuncList
-from .gaussian3 import gaussian3_func
+from .gaussian0 import gaussian0FuncList, gaussian0_func
+from .gaussian0 import gaussian0FuncList as funcList
+from .gaussian1 import gaussian1FuncList, gaussian1_func
+from .gaussian2 import gaussian2FuncList, gaussian2_func
+from .gaussian3 import gaussian3FuncList, gaussian3_func
 from dataclasses import dataclass
 from scipy.optimize import curve_fit
 from scipy.ndimage import gaussian_filter1d
@@ -92,17 +89,17 @@ def clipFunc(x: list[float], y: list[float], units: str = 'eV') -> tuple[list[fl
 def process(x: list[float], y: list[float], ngauss: int, amp: list[float, float],
             sigma: list[int, int], maxIter: int, derivLevel: int) -> tuple[list[float], float, list[float], list[float], bool]:
     if derivLevel == 0:
-        derivFuncList = funcList
-        gaussian_func = gaussian_func0
+        derivFuncList = gaussian0FuncList
+        gaussian_func = gaussian0_func
     elif derivLevel == 1:
-        derivFuncList = derivFuncList1
-        gaussian_func = gaussian_func1
+        derivFuncList = gaussian1FuncList
+        gaussian_func = gaussian1_func
     elif derivLevel == 2:
-        derivFuncList = derivFuncList2
-        gaussian_func = gaussian_func2
+        derivFuncList = gaussian2FuncList
+        gaussian_func = gaussian2_func
     elif derivLevel == 3:
-        derivFuncList = derivFuncList3
-        gaussian_func = gaussian_func3
+        derivFuncList = gaussian3FuncList
+        gaussian_func = gaussian3_func
 
     minbounds = []
     maxbounds = []
